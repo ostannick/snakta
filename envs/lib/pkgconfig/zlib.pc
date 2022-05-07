@@ -1,0 +1,13 @@
+prefix=/home/nick/snakta/envs
+exec_prefix=/home/nick/snakta/envs
+libdir=/home/nick/snakta/envs/lib
+sharedlibdir=/home/nick/snakta/envs/lib
+includedir=/home/nick/snakta/envs/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.12
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

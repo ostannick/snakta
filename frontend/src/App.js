@@ -1,23 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
 
+import { PumpContainer } from './components/PumpContainer.react';
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="pumps-wrapper">
+        <PumpContainer pumpId={1}/>
+        <PumpContainer pumpId={2}/>
+        <PumpContainer pumpId={3}/>
+        <PumpContainer pumpId={4}/>
+      </div>
     </div>
   );
 }
