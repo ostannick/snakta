@@ -7,10 +7,8 @@ function App() {
   return (
     <div className="App">
       <div className="pumps-wrapper">
-        <PumpContainer pumpId={1}/>
-        <PumpContainer pumpId={2}/>
-        <PumpContainer pumpId={3}/>
-        <PumpContainer pumpId={4}/>
+        <PumpContainer pumpGroup={"A"}/>
+        <PumpContainer pumpGroup={"B"}/>
       </div>
     </div>
   );
