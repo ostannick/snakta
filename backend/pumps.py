@@ -1,4 +1,5 @@
 import attr
+import time
 import RPi.GPIO as GPIO
 from typing import Any, List, Dict
 
@@ -42,22 +43,36 @@ class PumpHead:
     # Pulse width modulation (PWM) pin for motor speed control
     pwm_control: Any
 
-    def start_flow(self, duty_cycle, reverse=False):
+    def set_rotation_direction(self, direction="forward"):
 
-        # Set the motor rotation direction
-        if(reverse):
+        if(direction == "forward"):
 
             GPIO.output(self.A.pin_A, GPIO.LOW)
             GPIO.output(self.A.pin_B, GPIO.HIGH)
             GPIO.output(self.B.pin_A, GPIO.LOW)
             GPIO.output(self.B.pin_B, GPIO.HIGH)
 
-        else:
+        elif(direction == "reverse" or direction == "backward" or direction == "backwards"):
 
             GPIO.output(self.A.pin_A, GPIO.HIGH)
             GPIO.output(self.A.pin_B, GPIO.LOW)
             GPIO.output(self.B.pin_A, GPIO.HIGH)
             GPIO.output(self.B.pin_B, GPIO.LOW)
+
+        else:
+
+            print("Unrecognized direction.")
+
+    def start_flow(self, duty_cycle, reverse=False):
+
+        # Set the motor rotation direction
+        if(reverse):
+
+            self.set_rotation_direction("reverse")
+
+        else:
+
+            self.set_rotation_direction("forward")
 
         # Engage the relay pins
         GPIO.output(self.A.pin_relay, GPIO.HIGH)
@@ -87,6 +102,8 @@ class Snakta:
 
     pumps: Dict[str, PumpHead]
 
+    _shouldPump:bool = False
+
     @classmethod
     def new(cls, head_A, head_B):
 
@@ -101,13 +118,27 @@ class Snakta:
 
         self.pumps[head].start_flow(duty_cycle, reverse)
 
+        self._shouldPump = True
+
+        init_time = time.time()
+
+        while(self._shouldPump):
+
+            if(time.time() - init_time >= duration):
+
+                self.stop(head)
+                self._shouldPump = False
+                print(f"Duration/volume ({duration}s at duty cycle of {duty_cycle}) reached. Stopping flow on pumphead {head}.")
+
     def stop(self, head:str):
 
+        self._shouldPump = False
         self.pumps[head].stop_flow()
+        print("Manually stopping pump.")
 
 
-def flowrate_to_dutycycle(flowrate:float, pump_specific_constant:float) -> float:
+def flowrate_to_dutycycle(flow_rate:float, pump_specific_constant:float) -> float:
 
-    return flowrate * pump_specific_constant
+    return flow_rate * pump_specific_constant
 
 

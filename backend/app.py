@@ -4,6 +4,7 @@ from flask_cors import CORS
 import json
 
 # Libraries for computing flowrates
+import calibrations
 import random
 import time
 
@@ -21,9 +22,6 @@ pumphead_A = PumpHead(pump_A, pump_B, pump_A.pwm_control)
 
 # Make C and D controlled by PWM pin 13
 pumphead_B = PumpHead(pump_C, pump_D, pump_C.pwm_control)
-
-# Create the SNAKTA machine object
-snakta = Snakta.new(pumphead_A, pumphead_B)
 
 # We can now control the machine.
 
@@ -52,10 +50,14 @@ def pump_control(id):
 
         d = json.loads(request.data)
 
-        flowRate = d['flowRate']
-        volume = d['volume']
+        flowRate = float(d['flowRate'])
+        volume = float(d['volume'])
 
-        snakta.pumps[id].start_flow(flowRate)
+        Snakta.new(pumphead_A, pumphead_B).start(
+            id, 
+            flowrate_to_dutycycle(flowRate, calibrations.calibrations[id]['constant']),
+            volume / flowRate
+            )
 
         return f"Setting pump {id} to {d['flowRate']}mL/min"
 
@@ -64,7 +66,7 @@ def pump_kill(id):
 
     if(request.method == 'POST'):
 
-        snakta.pumps[id].stop_flow()
+        Snakta.new(pumphead_A, pumphead_B).stop()
 
         return (f"Pumphead {id} flow was killed.")
 
