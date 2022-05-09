@@ -1,9 +1,11 @@
 import React from "react"
 import Button from '@mui/material/Button';
 import { TextField } from "@mui/material";
-import ButtonGroup from "@mui/material/ButtonGroup"
+
+import { Stack } from "@mui/material";
 
 import axios from "axios";
+
 
 
 export class PumpFlowControl extends React.Component
@@ -28,28 +30,35 @@ export class PumpFlowControl extends React.Component
     {
         return(
             <div className="pump-control-container">
-                <TextField 
-                    id="flow-rate" 
-                    label="Flow Rate" 
-                    variant="standard" 
-                    value={this.state.flowRate}
-                    onChange={this.handleFlowRate}
-                    defaultValue={0}
-                    sy={{ m: 2 }}
-                />
-                <TextField 
-                    id="volume" 
-                    label="Volume" 
-                    variant="standard" 
-                    value={this.state.volume}
-                    onChange={this.handleVolume}
-                    defaultValue={0}
-                    sy={{ m: 2 }}
-                />
-                <ButtonGroup variant="contained" aria-label="button group" sy={{ m: 2 }}>
-                    <Button aria-label="secondary" onClick={this.setFlow}>Start</Button>
-                    <Button onClick={this.stopFlow}>Stop</Button>
-                </ButtonGroup>
+
+                <Stack spacing={4}>
+
+                    <TextField 
+                        id="flow-rate" 
+                        label="Flow Rate" 
+                        variant="standard" 
+                        value={this.state.flowRate}
+                        onChange={this.handleFlowRate}
+                        sy={{ m: 2 }}
+                    />
+                    <TextField 
+                        id="volume" 
+                        label="Volume" 
+                        variant="standard" 
+                        value={this.state.volume}
+                        onChange={this.handleVolume}
+                        sy={{ m: 2 }}
+                    />
+
+                    <Stack spacing={2} direction="row">
+                        <Button variant="contained" onClick={this.setFlow}>Start Flow</Button>
+                        <Button variant="outlined" onClick={this.stopFlow}>Stop Flow</Button>
+                    </Stack>
+
+                </Stack>
+
+                
+
             </div>
         )
     }

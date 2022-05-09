@@ -1,7 +1,9 @@
 import React from "react"
 import ReactDOM from 'react-dom';
-import Button from '@mui/material/Button';
-import { TextField } from "@mui/material";
+
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+
 
 import axios from "axios";
 
@@ -40,11 +42,16 @@ export class PumpUVDisplay extends React.Component
     {
         return(
             <div className="pump-uv-display">  
-                <Chart
-                    options={this.state.options}
-                    series={this.state.series}
-                    type="area"
-                />
+            <Card>
+                <CardContent>
+                    <Chart
+                        options={this.state.options}
+                        series={this.state.series}
+                        type="area"
+                    />
+                </CardContent>
+            </Card>
+                
             </div>
         )
     }

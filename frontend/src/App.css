@@ -1,5 +1,6 @@
 html, body
 {
+  background-color: #e7ebf0;
   margin: 0;
   width: 100%;
   height: 100%;
@@ -40,7 +41,18 @@ html, body
   flex-direction: column;
 }
 
-.pump-control-container *
-{
-  
+.spin-animation{
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
 }

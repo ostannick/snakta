@@ -1,7 +1,12 @@
 import React from "react"
+import { PumpStatus } from "./PumpStatus.react"
 import { PumpFlowControl } from "./PumpFlowControl.react"
 import { Typography } from "@mui/material"
 import { PumpUVDisplay } from "./PumpUVDisplay.react"
+
+import Card from "@mui/material/Card"
+import { CardContent } from "@mui/material"
+import Stack from "@mui/material/Stack"
 
 export class PumpContainer extends React.Component
 {
@@ -13,16 +18,19 @@ export class PumpContainer extends React.Component
     render()
     {
         return(
-            <div className="pump-container">
-                <Typography variant="h4" component="h2">
-                    Pumps {this.props.pumpGroup}
-                </Typography>;
 
-                <PumpFlowControl 
-                    pumpGroup={this.props.pumpGroup}
-                />
+            <Card>
+              <CardContent>
+                <Stack>
 
-            </div>
+                <Typography variant="h4" component="h2">Pumphead {this.props.pumpGroup}</Typography>
+
+                <PumpFlowControl pumpGroup={this.props.pumpGroup}/>
+
+                </Stack>
+              </CardContent>
+            </Card>
+
         )
     }
 }
