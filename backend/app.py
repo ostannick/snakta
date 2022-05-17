@@ -11,6 +11,10 @@ import time
 # Pump setup
 from pumps import *
 
+# GPIO Setup
+from setup import pin_setup
+GPIO.setwarnings(False)
+
 # Create our pumps. Args 1 & 2 are directionality pins. Arg3 is relay pin. Arg4 is PWM pin.
 pump_A = Pump.new(29, 31, 3, 12)
 pump_B = Pump.new(32, 33, 5, 18)
@@ -53,6 +57,9 @@ def pump_control(id):
         flowRate = float(d['flowRate'])
         volume = float(d['volume'])
 
+        if(flowRate == 0):
+            return "Kill the pump instead."
+
         Snakta.new(pumphead_A, pumphead_B).start(
             id, 
             flowrate_to_dutycycle(flowRate, calibrations.calibrations[id]['constant']),
@@ -66,9 +73,57 @@ def pump_kill(id):
 
     if(request.method == 'POST'):
 
-        Snakta.new(pumphead_A, pumphead_B).stop()
+        Snakta.new(pumphead_A, pumphead_B).stop(id)
 
         return (f"Pumphead {id} flow was killed.")
+
+@app.route('/pinout/high/<id>')
+def pin_high(id):
+
+    pin = int(id)
+    pin_setup(pin, "OUTPUT")
+    print(f"Setting pin {pin} to HIGH...")
+    GPIO.output(pin, GPIO.HIGH)
+    print("Set.")
+    return(f"Set {pin} to HIGH.")
+
+@app.route('/pinout/low/<id>')
+def pin_low(id):
+
+    pin = int(id)
+    pin_setup(pin, "OUTPUT")
+    print(f"Setting pin {pin} to LOW...")
+    GPIO.output(pin, GPIO.LOW)
+    print("Set.")
+    return(f"Set {pin} to LOW.")
+
+@app.route('/pinout/<id>', methods=['GET', 'POST'])
+def pin(id):
+
+    d = json.loads(request.data)
+
+    if(d['mode'] == "HIGH"):
+
+        print(f"Setting pin {id} to {d['mode']}...")
+        GPIO.output(id, GPIO.HIGH)
+        print("Set.")
+        return(f"Set {id} to {d['mode']}")
+
+    elif(d['mode' == "LOW"]):
+
+        print(f"Setting pin {id} to {d['mode']}...")
+        GPIO.output(id, GPIO.LOW)
+        return(f"Set {id} to {d['mode']}")
+
+    return "Couldn't set the pin. Something went wrong. Check the pinout endpoint."
+
+@app.route('/ping', methods=['GET'])
+def ping():
+
+    return 'Hello.'
+
+
+
 
 @app.route('/uv/<id>', methods=['GET'])
 def send_uv(id):
@@ -81,6 +136,7 @@ def send_uv(id):
         }
 
         return measurement
+
 
 
 if __name__ == '__main__':

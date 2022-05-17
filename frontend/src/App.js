@@ -1,51 +1,99 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react'
 
-import AppBar from "./components/application/AppBar.react"
+import ApplicationBar from "./components/application/ApplicationBar.react"
 import Grid from "@mui/material/Grid"
 import Box from '@mui/material/Box';
 import Card from "@mui/material/Card"
+import axios from 'axios'
 
 import { PumpContainer } from './components/PumpContainer.react';
 import { CardContent } from '@mui/material';
 import { PumpUVDisplay } from './components/PumpUVDisplay.react';
 
-function App() {
-  return (
-    <div className="App">
-      <AppBar />
+export class App extends React.Component {
 
-      <Box sx={{padding: '32px'}}>
+  constructor(props)
+  {
+    super(props);
 
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Box>
+    this.state = {
+      'ip': '127.0.0.1',
+      'isConnected': true,
+    }
 
-              <PumpContainer pumpGroup={"A"}/>
+    this.setIp = this.setIp.bind(this);
 
-            </Box>
+  }
+
+  render()
+  {
+    return (
+      <div className="App">
+        <ApplicationBar 
+          handleIp={this.setIp.bind(this)}
+          connectionStatus={this.state.isConnected}
+        />
+  
+        <Box sx={{padding: '32px'}}>
+  
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box>
+  
+                <PumpContainer pumpGroup={"A"} deviceIp={this.state.ip}/>
+  
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box>
+  
+                <PumpContainer pumpGroup={"B"} deviceIp={this.state.ip}/>
+  
+              </Box>
+            </Grid>
+  
+            <Grid item xs={12}>
+              <PumpUVDisplay 
+                pumpId={"A"}
+              />
+            </Grid>
+  
           </Grid>
-          <Grid item xs={6}>
-            <Box>
+  
+  
+        </Box>
+  
+      </div>
+    );
+  
+  }
 
-              <PumpContainer pumpGroup={"B"}/>
+  setIp(e)
+  {
+    this.setState({'ip': e.target.value})
 
-            </Box>
-          </Grid>
+    let url =  `http://${this.state.ip}:8000/ping`;
 
-          <Grid item xs={12}>
-            <PumpUVDisplay 
-              pumpId={"A"}
-            />
-          </Grid>
+    let config = {
+        headers: {"Access-Control-Allow-Origin": "*"}
+    }
 
-        </Grid>
-
-
-      </Box>
-
-    </div>
-  );
+    axios.get(url, config)
+    .then(response => {
+        if(response.data == 'Hello.')
+        {
+          console.log('Connected to the SNAKTA.')
+          this.setState({'isConnected': true})
+        }
+        else
+        {
+          console.log('Failure while connecting to the specified host.')
+          this.setState({'isConnected': false})
+        }
+    })
+  }
 }
 
 export default App;

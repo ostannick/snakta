@@ -23,9 +23,9 @@ export class PumpContainer extends React.Component
               <CardContent>
                 <Stack>
 
-                <Typography variant="h4" component="h2">Pumphead {this.props.pumpGroup}</Typography>
+                <Typography variant="h4" sy={{ m: 2 }} component="h2">Pumphead {this.props.pumpGroup}</Typography>
 
-                <PumpFlowControl pumpGroup={this.props.pumpGroup}/>
+                <PumpFlowControl pumpGroup={this.props.pumpGroup} deviceIp={this.props.deviceIp}/>
 
                 </Stack>
               </CardContent>

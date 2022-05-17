@@ -35,19 +35,21 @@ export class PumpFlowControl extends React.Component
 
                     <TextField 
                         id="flow-rate" 
-                        label="Flow Rate" 
-                        variant="standard" 
+                        label="Flow Rate (mL/min)" 
                         value={this.state.flowRate}
                         onChange={this.handleFlowRate}
                         sy={{ m: 2 }}
+                        variant="outlined"
+                        valueDefault={1}
                     />
                     <TextField 
                         id="volume" 
-                        label="Volume" 
-                        variant="standard" 
+                        label="Volume (mL)" 
                         value={this.state.volume}
                         onChange={this.handleVolume}
                         sy={{ m: 2 }}
+                        variant="outlined"
+                        valueDefault={1}
                     />
 
                     <Stack spacing={2} direction="row">
@@ -75,7 +77,7 @@ export class PumpFlowControl extends React.Component
 
     setFlow()
     {
-        let url = 'http://localhost:8000/pump/' + this.props.pumpGroup
+        let url = `http://${this.props.deviceIp}:8000/pump/${this.props.pumpGroup}`
 
         let data = {
             id: this.props.pumpId,
@@ -96,7 +98,7 @@ export class PumpFlowControl extends React.Component
 
     stopFlow()
     {
-        let url = 'http://localhost:8000/kill/' + this.props.pumpGroup
+        let url =  `http://${this.props.deviceIp}:8000/kill/${this.props.pumpGroup}`;
 
         let data = {
             id: this.props.pumpGroup,

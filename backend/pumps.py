@@ -45,7 +45,7 @@ class PumpHead:
 
     def set_rotation_direction(self, direction="forward"):
 
-        if(direction == "forward"):
+        if(direction == "forward" or direction == "forwards"):
 
             GPIO.output(self.A.pin_A, GPIO.LOW)
             GPIO.output(self.A.pin_B, GPIO.HIGH)
@@ -65,6 +65,8 @@ class PumpHead:
 
     def start_flow(self, duty_cycle, reverse=False):
 
+        print("The start_flow() method was called.")
+
         # Set the motor rotation direction
         if(reverse):
 
@@ -82,7 +84,10 @@ class PumpHead:
         # Start the PWM pin up and change the duty cycle to the specified value
         # This value will be different per-pump and will require calibration
         # Unfortunately two pump heads combined will pump at slightly different rates.
+        print("Starting at duty cycle zero.")
         self.pwm_control.start(0)
+
+        print(f"Switching to duty cycle {duty_cycle}")
         self.pwm_control.ChangeDutyCycle(duty_cycle)
         
     def stop_flow(self):
@@ -116,12 +121,16 @@ class Snakta:
 
     def start(self, head:str, duty_cycle:float, duration:float, reverse=False):
 
+        print(f"Starting flow on pump head {head} using duty cycle {duty_cycle}")
         self.pumps[head].start_flow(duty_cycle, reverse)
 
+        print(f"Setting pump boolean to {True}")
         self._shouldPump = True
 
+        print(f"Flow starting at {time.time()}")
         init_time = time.time()
 
+        print(f"Loop starting...")
         while(self._shouldPump):
 
             if(time.time() - init_time >= duration):
